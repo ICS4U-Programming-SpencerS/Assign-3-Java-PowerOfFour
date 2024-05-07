@@ -1,21 +1,17 @@
-//package com.example;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-
 /**
- * power of four assignment 3
- *
+ * Power of Four Assignment 3
+ * Determines whether a given number is a power of four and finds the maximum value from an input file.
+ * 
  * @author Spencer Scarlett
  * @version 1.0
  * @since 2024-04-25
  */
-
-// powerOfFour class
 public final class powerOfFour {
 
     /** Private constructor to prevent instantiation. */
@@ -30,56 +26,63 @@ public final class powerOfFour {
      */
     public static void main(String[] args) {
 
-        // input and output file paths
+        // Input and output file paths
         final File file = new File("input.txt");
         final File fileOut = new File("output.txt");
 
         try {
-            //objects for filewriter, scanner, and printwriter
+            // Objects for file writer, scanner, and print writer
             final FileWriter fW = new FileWriter(fileOut);
             final Scanner sc = new Scanner(file);
             final PrintWriter write = new PrintWriter(fW);
 
-            // read each line from input file
+            // declaring array and size
+            int[] intArray = new int[100];
+
+            // this is new and is designed to test where to hold the arrays
+            // normally for storing info
+            int index = 0;
+
+            // Read each line from input file
             while (sc.hasNextLine()) {
-                // sets line as string first
+                // Sets line as string first
                 final String line = sc.nextLine();
 
                 try {
-                    // before parsing it as an int
+                    // Before parsing it as an int
                     final int intLine = Integer.parseInt(line);
-
-                    // function call for input
+                    // Store the integer in the array
+                    intArray[index++] = intLine;
                     int result = isPowerOfFour(intLine);
-                    // if the value is a power of four, one is returned and displayed
+
+                    // If the value is a power of four, one is returned and displayed
                     if (result == 1) {
                         write.println(intLine + " is a power of four.");
-                        // if 0 is resulted, the value is not a power of four
                     } else if (result == 0) {
+                        // If 0 is resulted, the value is not a power of four
                         write.println(intLine + " is not a power of four.");
-                        // for invalid inputs (0)
                     } else {
+                        // For invalid inputs (0)
                         write.println(intLine + " is not a power of four and is an invalid input.");
                     }
+                    // Find and print the maximum value
+                    int max = findMax(intArray, index, 0);
+                    write.println("Maximum value from input file: " + max);
 
-                    // for input lines that are not parsable as ints
                 } catch (NumberFormatException error) {
                     System.out.println("Error " + line + " is an invalid input(whole numbers only).");
                 }
             }
-            
-            // closing resources and output message (to console)
+
+            // Closing resources and output message (to console)
             write.close();
             sc.close();
             System.out.println("Done program");
 
-        } catch (IOException error) {
-             // For when no input file is found.
-            System.out.println("An error occurred: "
-                    + error.getMessage());
+        } catch (IOException error) { // For when no input file is found.
+            System.out.println("An error occurred: " + error.getMessage());
         }
     }
-
 
     /**
      * Determines whether a given number is a power of four.
@@ -88,10 +91,10 @@ public final class powerOfFour {
      * @return 1 if the number is a power of four, 0 if it is not, -1 if the input is invalid.
      */
     public static int isPowerOfFour(int n) {
-        // if input is 0 or less
+        // If input is 0 or less
         if (n == 0)
             return -1;
-        // base case, 1 is a power of four
+        // Base case, 1 is a power of four
         if (n == 1)
             return 1;
         // not a power of four value
@@ -100,5 +103,23 @@ public final class powerOfFour {
 
         // recursively checks the number each time to determine if it's a power of four
         return isPowerOfFour(n / 4);
+    }
+
+    /**
+     * function to find the maximum value in the array using recursion
+     *
+     * @param arr the array of integers
+     * @param size the size of the array
+     * @param index the current index in the array
+     * @return the maximum value in the array
+     */
+    public static int findMax(int[] arr, int size, int index) {
+        // base case, if the index value is the last element, return the value as it's the maximum
+        if (index == size - 1) {
+            return arr[index];
+        }
+        // recursive case, finds the maximum value in the rest of the array
+        int maxRest = findMax(arr, size, index + 1);
+        return Math.max(arr[index], maxRest);
     }
 }
